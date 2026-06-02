@@ -1,8 +1,19 @@
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import "./App.css";
 
 const ROWS = 25;
 const COLS = 25;
+
+const operations = [
+  [0, 1],
+  [0, -1],
+  [1, -1],
+  [-1, 1],
+  [1, 1],
+  [-1, -1],
+  [1, 0],
+  [-1, 0],
+];
 
 function createEmptyGrid() {
   return Array.from({ length: ROWS }, () =>
@@ -10,8 +21,56 @@ function createEmptyGrid() {
   );
 }
 
+function createRandomGrid() {
+  return Array.from({ length: ROWS }, () =>
+    Array.from({ length: COLS }, () => (Math.random() > 0.7 ? 1 : 0))
+  );
+}
+
 function App() {
   const [grid, setGrid] = useState(createEmptyGrid());
+  const [running, setRunning] = useState(false);
+
+  const runningRef = useRef(running);
+  runningRef.current = running;
+
+  const runSimulation = useCallback(() => {
+    if (!runningRef.current) return;
+
+    setGrid((g) => {
+      const newGrid = g.map((arr) => [...arr]);
+
+      for (let i = 0; i < ROWS; i++) {
+        for (let j = 0; j < COLS; j++) {
+          let neighbors = 0;
+
+          operations.forEach(([x, y]) => {
+            const newI = i + x;
+            const newJ = j + y;
+
+            if (
+              newI >= 0 &&
+              newI < ROWS &&
+              newJ >= 0 &&
+              newJ < COLS
+            ) {
+              neighbors += g[newI][newJ];
+            }
+          });
+
+          if (neighbors < 2 || neighbors > 3) {
+            newGrid[i][j] = 0;
+          } else if (g[i][j] === 0 && neighbors === 3) {
+            newGrid[i][j] = 1;
+          }
+        }
+      }
+
+      return newGrid;
+    });
+
+    setTimeout(runSimulation, 200);
+  }, []);
 
   const toggleCell = (row: number, col: number) => {
     const newGrid = grid.map((arr) => [...arr]);
@@ -24,6 +83,42 @@ function App() {
   return (
     <div className="container">
       <h1>Conway's Game of Life</h1>
+
+      <div style={{ marginBottom: 20 }}>
+        <button
+          onClick={() => {
+            setRunning(true);
+            runningRef.current = true;
+            runSimulation();
+          }}
+        >
+          Start
+        </button>
+
+        <button
+          onClick={() => {
+            setRunning(false);
+          }}
+        >
+          Stop
+        </button>
+
+        <button
+          onClick={() => {
+            setGrid(createEmptyGrid());
+          }}
+        >
+          Clear
+        </button>
+
+        <button
+          onClick={() => {
+            setGrid(createRandomGrid());
+          }}
+        >
+          Random
+        </button>
+      </div>
 
       <div
         className="grid"
