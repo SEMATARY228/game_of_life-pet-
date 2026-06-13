@@ -17,11 +17,30 @@ const operations = [
 
 const PATTERNS = {
   glider: [
-    [0, 1],
-    [1, 2],
-    [2, 0],
-    [2, 1],
-    [2, 2],
+    [0, 1], [1, 2], [2, 0], [2, 1], [2, 2],
+  ],
+  blinker: [
+    [0, 0], [0, 1], [0, 2],
+  ],
+  toad: [
+    [0, 1], [0, 2], [0, 3],
+    [1, 0], [1, 1], [1, 2],
+  ],
+  beacon: [
+    [0, 0], [0, 1], [1, 0],
+    [2, 3], [3, 2], [3, 3],
+  ],
+  pulsar: [
+    [0,2],[0,3],[0,4],[0,8],[0,9],[0,10],
+    [2,0],[2,5],[2,7],[2,12],
+    [3,0],[3,5],[3,7],[3,12],
+    [4,0],[4,5],[4,7],[4,12],
+    [4,2],[4,3],[4,4],[4,8],[4,9],[4,10],
+    [6,2],[6,3],[6,4],[6,8],[6,9],[6,10],
+    [7,0],[7,5],[7,7],[7,12],
+    [8,0],[8,5],[8,7],[8,12],
+    [9,0],[9,5],[9,7],[9,12],
+    [10,2],[10,3],[10,4],[10,8],[10,9],[10,10],
   ],
 };
 
@@ -143,6 +162,38 @@ function App() {
         }}
       >
         Glider
+      </button>
+
+      <button
+        onClick={() => {
+          setGrid(applyPattern(PATTERNS.blinker, 12, 11));
+        }}
+      >
+        blinker
+      </button>
+
+      <button
+        onClick={() => {
+          setGrid(applyPattern(PATTERNS.toad, 11, 10));
+        }}
+      >
+        toad
+      </button>
+
+      <button
+        onClick={() => {
+          setGrid(applyPattern(PATTERNS.beacon, 10, 10));
+        }}
+      >
+        beacon
+      </button>
+
+      <button
+        onClick={() => {
+          setGrid(applyPattern(PATTERNS.pulsar, 6, 6));
+        }}
+      >
+        pulsar
       </button>
 
       <div
