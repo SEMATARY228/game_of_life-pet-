@@ -15,9 +15,19 @@ const operations = [
   [-1, 0],
 ];
 
+const PATTERNS = {
+  glider: [
+    [0, 1],
+    [1, 2],
+    [2, 0],
+    [2, 1],
+    [2, 2],
+  ],
+};
+
 function createEmptyGrid() {
   return Array.from({ length: ROWS }, () =>
-    Array.from({ length: COLS }, () => 0)
+    Array.from({ length: COLS }, () => 0),
   );
 }
 
@@ -25,6 +35,18 @@ function createRandomGrid() {
   return Array.from({ length: ROWS }, () =>
     Array.from({ length: COLS }, () => (Math.random() > 0.7 ? 1 : 0))
   );
+}
+
+function applyPattern(pattern: number[][], startRow: number, startCol: number) {
+  const newGrid = createEmptyGrid();
+  pattern.forEach(([r, c]) => {
+    const row = startRow + r;
+    const col = startCol + c;
+    if (row < ROWS && col < COLS) {
+      newGrid[row][col] = 1;
+    }
+  });
+  return newGrid;
 }
 
 function App() {
@@ -48,12 +70,7 @@ function App() {
             const newI = i + x;
             const newJ = j + y;
 
-            if (
-              newI >= 0 &&
-              newI < ROWS &&
-              newJ >= 0 &&
-              newJ < COLS
-            ) {
+            if (newI >= 0 && newI < ROWS && newJ >= 0 && newJ < COLS) {
               neighbors += g[newI][newJ];
             }
           });
@@ -120,6 +137,14 @@ function App() {
         </button>
       </div>
 
+      <button
+        onClick={() => {
+          setGrid(applyPattern(PATTERNS.glider, 5, 5));
+        }}
+      >
+        Glider
+      </button>
+
       <div
         className="grid"
         style={{
@@ -136,12 +161,10 @@ function App() {
                 width: 20,
                 height: 20,
                 border: "solid 1px #444",
-                backgroundColor: grid[rowIndex][colIndex]
-                  ? "#222"
-                  : "#fff",
+                backgroundColor: grid[rowIndex][colIndex] ? "#222" : "#fff",
               }}
             />
-          ))
+          )),
         )}
       </div>
     </div>
