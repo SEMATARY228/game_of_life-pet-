@@ -314,7 +314,7 @@ function App() {
           rows.map((_, colIndex) => (
             <div
               key={`${rowIndex}-${colIndex}`}
-              onClick={() => toggleCell(rowIndex, colIndex)}
+              onClick={() => { toggleCell(rowIndex, colIndex); }}
               style={{
                 width: 20,
                 height: 20,
