@@ -1,5 +1,7 @@
 # Conway's Game of Life
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=SEMATARY228_game_of_life-pet-&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=SEMATARY228_game_of_life-pet-)
+
 Реализация клеточного автомата [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) на React + TypeScript + Vite.
 
 Проект основан на туториале [freeCodeCamp](https://www.freecodecamp.org/news/create-gameoflife-with-react-in-one-hour-8e686a410174), однако с самого начала был реализован на TypeScript + Vite вместо оригинального JavaScript + CRA, а также расширен дополнительным функционалом.
