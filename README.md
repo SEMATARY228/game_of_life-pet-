@@ -6,7 +6,7 @@
 
 Проект основан на туториале [freeCodeCamp](https://www.freecodecamp.org/news/create-gameoflife-with-react-in-one-hour-8e686a410174), однако с самого начала был реализован на TypeScript + Vite вместо оригинального JavaScript + CRA, а также расширен дополнительным функционалом и собственным бэкендом.
 
-🔗 **[Демо (фронтенд)](https://game-of-life-pet-95w2.vercel.app/)**
+🔗 **[Демо](https://game-of-life-pet-95w2.vercel.app/)** — фронтенд + API на Render
 
 ---
 
@@ -37,6 +37,16 @@
 - Удаление сохранения
 
 ---
+
+## Архитектура
+
+```
+Frontend (Vercel) → API (Render/Express) → SQLite
+```
+
+**Деплой:**
+- Фронтенд: https://game-of-life-pet-95w2.vercel.app
+- Бэкенд: https://game-of-life-pet.onrender.com
 
 ## API
 
