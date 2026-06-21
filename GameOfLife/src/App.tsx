@@ -3,7 +3,7 @@ import "./App.css";
 
 const ROWS = 25;
 const COLS = 25;
-const API_URL = "http://localhost:3001";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 const operations = [
   [0, 1],
