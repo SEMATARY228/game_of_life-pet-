@@ -3,7 +3,8 @@ const cors = require("cors");
 const db = require("./db");
 
 const app = express();
-app.use(cors());
+app.disable('x-powered-by');
+app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:3001', 'https://game-of-life-pet-95w2.vercel.app'] }));
 app.use(express.json({ limit: "2mb" }));
 
 app.post("/api/boards", (req, res) => {

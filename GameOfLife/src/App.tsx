@@ -229,7 +229,9 @@ function App() {
 
   const loadBoard = async (id: number) => {
     try {
-      const res = await fetch(`${API_URL}/api/boards/${id}`);
+      const boardId = Number(id);
+      if (!Number.isFinite(boardId)) return;
+      const res = await fetch(`${API_URL}/api/boards/${encodeURIComponent(String(boardId))}`);
       const data = await res.json();
       setGrid(data.grid);
       setGeneration(data.generation);
@@ -242,7 +244,9 @@ function App() {
 
   const deleteBoard = async (id: number) => {
     try {
-      await fetch(`${API_URL}/api/boards/${id}`, { method: "DELETE" });
+      const boardId = Number(id);
+      if (!Number.isFinite(boardId)) return;
+      await fetch(`${API_URL}/api/boards/${encodeURIComponent(String(boardId))}`, { method: "DELETE" });
       loadBoardsList();
     } catch (err) {
       console.error("Не удалось удалить сохранение", err);
@@ -422,6 +426,11 @@ function App() {
               onClick={() => {
                 toggleCell(rowIndex, colIndex);
               }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') toggleCell(rowIndex, colIndex);
+              }}
+              role="button"
+              tabIndex={0}
               style={{
                 width: 20,
                 height: 20,
