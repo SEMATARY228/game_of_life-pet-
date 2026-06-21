@@ -1,8 +1,9 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
 
 const ROWS = 25;
 const COLS = 25;
+const API_URL = "http://localhost:3001";
 
 const operations = [
   [0, 1],
@@ -96,6 +97,13 @@ const PATTERNS = {
   ],
 };
 
+type SavedBoard = {
+  id: number;
+  name: string;
+  generation: number;
+  created_at: string;
+};
+
 function createEmptyGrid() {
   return Array.from({ length: ROWS }, () =>
     Array.from({ length: COLS }, () => 0),
@@ -144,6 +152,9 @@ function App() {
   const runningRef = useRef(running);
   runningRef.current = running;
 
+  const [savedBoards, setSavedBoards] = useState<SavedBoard[]>([]);
+  const [boardName, setBoardName] = useState("");
+
   const runSimulation = useCallback(() => {
     if (!runningRef.current) return;
 
@@ -188,6 +199,59 @@ function App() {
 
     setGrid(newGrid);
   };
+
+  const loadBoardsList = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/boards`);
+      const data = await res.json();
+      setSavedBoards(data);
+    } catch (err) {
+      console.error("Не удалось загрузить список сохранений", err);
+    }
+  };
+
+  const saveBoard = async () => {
+    if (!boardName.trim()) return;
+
+    try {
+      await fetch(`${API_URL}/api/boards`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: boardName, grid, generation }),
+      });
+
+      setBoardName("");
+      loadBoardsList();
+    } catch (err) {
+      console.error("Не удалось сохранить поле", err);
+    }
+  };
+
+  const loadBoard = async (id: number) => {
+    try {
+      const res = await fetch(`${API_URL}/api/boards/${id}`);
+      const data = await res.json();
+      setGrid(data.grid);
+      setGeneration(data.generation);
+      setRunning(false);
+      runningRef.current = false;
+    } catch (err) {
+      console.error("Не удалось загрузить поле", err);
+    }
+  };
+
+  const deleteBoard = async (id: number) => {
+    try {
+      await fetch(`${API_URL}/api/boards/${id}`, { method: "DELETE" });
+      loadBoardsList();
+    } catch (err) {
+      console.error("Не удалось удалить сохранение", err);
+    }
+  };
+
+  useEffect(() => {
+    loadBoardsList();
+  }, []);
 
   return (
     <div className="container">
@@ -304,6 +368,47 @@ function App() {
       </div>
 
       <div
+        style={{
+          marginBottom: 20,
+          padding: 10,
+          border: "1px solid #ccc",
+          maxWidth: 500,
+        }}
+      >
+        <h3>Сохранения</h3>
+        <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+          <input
+            type="text"
+            placeholder="Название сохранения"
+            value={boardName}
+            onChange={(e) => setBoardName(e.target.value)}
+          />
+          <button onClick={saveBoard}>Сохранить</button>
+        </div>
+
+        <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+          {savedBoards.map((board) => (
+            <li
+              key={board.id}
+              style={{
+                display: "flex",
+                gap: 8,
+                alignItems: "center",
+                marginBottom: 6,
+              }}
+            >
+              <span>{board.name}</span>
+              <span style={{ color: "#888", fontSize: 12 }}>
+                (поколение {board.generation})
+              </span>
+              <button onClick={() => loadBoard(board.id)}>Загрузить</button>
+              <button onClick={() => deleteBoard(board.id)}>Удалить</button>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div
         className="grid"
         style={{
           display: "grid",
@@ -314,7 +419,9 @@ function App() {
           rows.map((_, colIndex) => (
             <div
               key={`${rowIndex}-${colIndex}`}
-              onClick={() => { toggleCell(rowIndex, colIndex); }}
+              onClick={() => {
+                toggleCell(rowIndex, colIndex);
+              }}
               style={{
                 width: 20,
                 height: 20,
@@ -329,4 +436,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; 
