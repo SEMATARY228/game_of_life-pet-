@@ -8,6 +8,8 @@
 
 🔗 **[Демо](https://game-of-life-pet-95w2.vercel.app/)** — фронтенд + API на Render
 
+📹 **[Видео-демонстрация](game_of_life_demo.mov)** — 1.5 мин, все функции (Save/Load)
+
 ---
 
 ## Стек
